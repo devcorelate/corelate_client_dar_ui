@@ -2,7 +2,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Badge, Button, Dropdown, Modal, Select, TextInput } from 'flowbite-react';
+import { Badge, Button, Dropdown, DropdownHeader, DropdownItem, Modal, ModalBody, ModalFooter, ModalHeader, Select, TextInput } from 'flowbite-react';
 import {
   HiBell,
   HiBriefcase,
@@ -354,7 +354,8 @@ export default function DarEmployeeDashboardPage() {
 
   const displayName = deriveDisplayName(session);
   const subtitle = deriveSubtitle(session);
-  const avatar = asString(session?.avatar) ?? asString(session?.profileImage) ?? '/images/default-image.png';
+  const avatar = asString(session?.avatar) ?? asString(session?.profileImage) ?? '/images/default-avatar.svg';
+  const avatarIsRemote = /^https?:\/\//i.test(avatar);
 
   const handleSignOut = () => {
     removeToken();
@@ -418,11 +419,8 @@ export default function DarEmployeeDashboardPage() {
             <HiMenu className="h-6 w-6" />
           </button>
           <Link href="/portal/login/dar/employee" className="flex min-w-max items-center gap-3">
-            <Image src="/images/dar/dar_logo.png" alt="DAR logo" width={38} height={38} className="rounded-full bg-emerald-50" />
-            <div className="hidden sm:block">
-              <p className="text-sm font-bold text-[#007a3d]">DAR LCMS</p>
-              <p className="text-[11px] text-slate-500">Employee Workspace</p>
-            </div>
+            <Image src="/images/dar/dar_logo.png" alt="DAR logo"   width={100} height={48} className="h-[35px] w-auto" />
+
           </Link>
 
           <div className="relative ml-0 flex-1 lg:ml-4">
@@ -446,26 +444,30 @@ export default function DarEmployeeDashboardPage() {
               </span>
             }
           >
-            <Dropdown.Header>
+            <DropdownHeader>
               <span className="block text-sm font-semibold">Notifications</span>
               <span className="block truncate text-xs text-slate-500">{notificationLoading ? 'Loading assignments...' : `${notifications.length} assigned item(s)`}</span>
-            </Dropdown.Header>
+            </DropdownHeader>
             {notifications.length ? (
               notifications.map((item) => (
-                <Dropdown.Item key={item.id} onClick={() => router.push('/workflow/bpmn/preview-workflow/internal')}>
+                <DropdownItem key={item.id} onClick={() => router.push('/workflow/bpmn/preview-workflow/internal')}>
                   <div className="max-w-xs text-left">
                     <p className="truncate text-sm font-semibold text-slate-800">{item.title}</p>
                     <p className="text-xs text-slate-500">Workflow {item.workflowId}</p>
                   </div>
-                </Dropdown.Item>
+                </DropdownItem>
               ))
             ) : (
-              <Dropdown.Item disabled>{notificationLoading ? 'Loading...' : 'No assigned workflow notifications'}</Dropdown.Item>
+              <DropdownItem disabled>{notificationLoading ? 'Loading...' : 'No assigned workflow notifications'}</DropdownItem>
             )}
           </Dropdown>
 
           <div className="hidden min-w-max items-center gap-3 md:flex">
-            <Image src={avatar} alt="Employee avatar" width={36} height={36} className="rounded-full bg-slate-200" />
+            {avatarIsRemote ? (
+              <img src={avatar} alt="Employee avatar" width={36} height={36} className="h-9 w-9 rounded-full bg-slate-200 object-cover" />
+            ) : (
+              <Image src={avatar} alt="Employee avatar" width={36} height={36} className="rounded-full bg-slate-200" />
+            )}
             <div className="max-w-44">
               <p className="truncate text-sm font-semibold text-slate-800">{displayName}</p>
               <p className="truncate text-xs text-slate-500">{subtitle}</p>
@@ -609,8 +611,8 @@ export default function DarEmployeeDashboardPage() {
       </div>
 
       <Modal show={showNewTaskModal} onClose={() => setShowNewTaskModal(false)} size="md">
-        <Modal.Header>New Task</Modal.Header>
-        <Modal.Body>
+        <ModalHeader>New Task</ModalHeader>
+        <ModalBody>
           <form id="newTaskForm" className="space-y-4" onSubmit={createTask}>
             <TextInput placeholder="Task" value={newTask.task} onChange={(event) => setNewTask((current) => ({ ...current, task: event.target.value }))} required />
             <TextInput placeholder="Category" value={newTask.category} onChange={(event) => setNewTask((current) => ({ ...current, category: event.target.value }))} required />
@@ -621,16 +623,16 @@ export default function DarEmployeeDashboardPage() {
               <option value="COMPLETED">COMPLETED</option>
             </Select>
           </form>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <Button type="submit" form="newTaskForm" style={{ backgroundColor: DAR_GREEN }}>Create</Button>
           <Button color="light" onClick={() => setShowNewTaskModal(false)}>Cancel</Button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
 
       <Modal show={Boolean(selectedTask)} onClose={() => setSelectedTask(null)} size="md">
-        <Modal.Header>Change Status</Modal.Header>
-        <Modal.Body>
+        <ModalHeader>Change Status</ModalHeader>
+        <ModalBody>
           {selectedTask ? (
             <div className="space-y-4">
               <div className="rounded-md bg-gray-50 p-3">
@@ -644,11 +646,11 @@ export default function DarEmployeeDashboardPage() {
               </Select>
             </div>
           ) : null}
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <Button onClick={saveStatus} style={{ backgroundColor: DAR_GREEN }}>Save</Button>
           <Button color="light" onClick={() => setSelectedTask(null)}>Cancel</Button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     </main>
   );

@@ -1,4 +1,5 @@
-export const GATEWAY_BASE_PATH: string = process.env.ENV_GATEWAY_BASE_URL || '';
+export const GATEWAY_BASE_PATH: string = process.env.ENV_GATEWAY_BASE_URL || `http://localhost:8072`;
+export const CORELATE_LOGIN_PATH: string = process.env.ENV_CORELATE_LOGIN_URL || `http://localhost:3005`;
 
 export const ACCOUNTS_BASE_PATH = `${GATEWAY_BASE_PATH}/corelate/accounts`;
 export const LOGIN_ACCOUNT_API = `${ACCOUNTS_BASE_PATH}/api/p/login`;

@@ -1,7 +1,8 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { CORELATE_LOGIN_PATH } from '@/utils/constants';
 import { Alert, Button, Checkbox, Label, TextInput } from 'flowbite-react';
 import { HiEye, HiEyeOff, HiInformationCircle, HiShieldCheck } from 'react-icons/hi';
 import { setToken } from '@/utils/headers/token';
@@ -19,7 +20,7 @@ export default function DarEmployeeLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberPassword, setRememberPassword] = useState(false);
+  const [rememberEmail, setRememberEmail] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -30,6 +31,14 @@ export default function DarEmployeeLoginPage() {
     setAlertMessage(message);
     setAlertType(type);
   };
+
+  useEffect(() => {
+    const rememberedEmail = window.localStorage.getItem('darRememberEmail');
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberEmail(true);
+    }
+  }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,10 +67,9 @@ export default function DarEmployeeLoginPage() {
       }
 
       setToken(data.token, data.token_expired);
-      window.localStorage.setItem('_rp', password);
       window.localStorage.setItem('userSession', JSON.stringify(data.userDetails ?? { email: email.trim() }));
       window.localStorage.setItem('userPermission', JSON.stringify(data.permissions ?? null));
-      if (rememberPassword) {
+      if (rememberEmail) {
         window.localStorage.setItem('darRememberEmail', email.trim());
       } else {
         window.localStorage.removeItem('darRememberEmail');
@@ -108,7 +116,7 @@ export default function DarEmployeeLoginPage() {
             <div>
               <div className="mb-8 flex items-center gap-3">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full border border-emerald-100 bg-emerald-50 p-2">
-                  <Image src="/images/dar/dar_logo.png" alt="DAR logo" width={42} height={42} className="rounded-full" />
+                  <Image src="/images/dar/dar_logo_login.svg" alt="DAR logo" width={42} height={42} className="" />
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#007a3d]">DAR</p>
@@ -127,7 +135,7 @@ export default function DarEmployeeLoginPage() {
 
               <form className="mt-6 space-y-5" onSubmit={handleSubmit} noValidate>
                 <div>
-                  <Label htmlFor="email" value="Email address" />
+                  <Label htmlFor="email">Email address</Label>
                   <TextInput
                     id="email"
                     name="email"
@@ -143,7 +151,7 @@ export default function DarEmployeeLoginPage() {
 
                 <div>
                   <div className="mb-2 flex items-center justify-between">
-                    <Label htmlFor="password" value="Password" />
+                    <Label htmlFor="password">Password</Label>
                     <Link href="/forgot" className="text-xs font-semibold text-[#007a3d] hover:underline">
                       Forgot password?
                     </Link>
@@ -154,7 +162,7 @@ export default function DarEmployeeLoginPage() {
                       name="password"
                       type={showPassword ? 'text' : 'password'}
                       color={inputColor}
-                      placeholder="••••••••"
+                      placeholder="********"
                       autoComplete="current-password"
                       value={password}
                       required
@@ -173,12 +181,12 @@ export default function DarEmployeeLoginPage() {
 
                 <div className="flex items-center gap-2">
                   <Checkbox
-                    id="rememberPassword"
-                    checked={rememberPassword}
-                    onChange={(event) => setRememberPassword(event.target.checked)}
+                    id="rememberEmail"
+                    checked={rememberEmail}
+                    onChange={(event) => setRememberEmail(event.target.checked)}
                   />
-                  <Label htmlFor="rememberPassword" className="text-sm text-slate-600">
-                    Remember Password
+                  <Label htmlFor="rememberEmail" className="text-sm text-slate-600">
+                    Remember email
                   </Label>
                 </div>
 
@@ -187,7 +195,7 @@ export default function DarEmployeeLoginPage() {
                 </Button>
 
                 <Link
-                  href="/login"
+                  href={CORELATE_LOGIN_PATH}
                   className="block w-full rounded-lg border border-slate-300 px-4 py-2.5 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   Corelate Login
