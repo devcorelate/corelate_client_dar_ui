@@ -1,0 +1,10 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" fill="#073B24"/>
+  <circle cx="980" cy="120" r="260" fill="#0B8A4A" fill-opacity="0.45"/>
+  <circle cx="160" cy="780" r="320" fill="#F7C948" fill-opacity="0.18"/>
+  <path d="M0 610C190 520 320 570 496 468C688 356 786 224 1200 296V900H0V610Z" fill="#007A3D" fill-opacity="0.72"/>
+  <path d="M130 224H456V560H130V224Z" fill="white" fill-opacity="0.12"/>
+  <path d="M180 292H406M180 362H406M180 432H330" stroke="white" stroke-width="28" stroke-linecap="round" stroke-opacity="0.45"/>
+  <text x="130" y="665" fill="white" font-family="Arial, sans-serif" font-size="56" font-weight="700">DAR LCMS</text>
+  <text x="130" y="720" fill="white" font-family="Arial, sans-serif" font-size="28" opacity="0.8">Legal Case Monitoring System</text>
+</svg>
